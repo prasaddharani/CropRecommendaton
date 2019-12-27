@@ -24,7 +24,7 @@ def load_files(file_name):
 
 def weather_clean(df,syear,eyear):
     # fix times and drop un-needed stuff
-    print 'Formating dates, and time columns'
+    print('Formating dates, and time columns')
 
     df['dropme'] = pd.to_numeric([('20' + (x.split(' ')[0]).split('/')[2])*1 for x in df['aDate']])
     df = df.loc[df['dropme'] >= MIN_YEAR]
@@ -34,7 +34,7 @@ def weather_clean(df,syear,eyear):
     df['year'] = df['dropme']
     df.drop('dropme', axis=1)
 
-    print 'Filter out columns not needed'
+    print('Filter out columns not needed')
     df_times = df.filter(like='Time',axis=1).columns.tolist()
     df_unnamed = df.filter(like='Unnamed',axis=1).columns.tolist()
 
@@ -49,7 +49,7 @@ def weather_clean(df,syear,eyear):
     df = df.drop(df[df.year > eyear].index)
 
 
-    print 'building table and fixing NANs'
+    print('building table and fixing NANs')
     # Taking care of the nans as first pass analysis
     df['precipAccumulation'].astype(float)
     df['cloudCover'].fillna(method='bfill',inplace=True)                 # ===> assume missing cloud data....had no clouds
@@ -104,7 +104,7 @@ def weather_clean(df,syear,eyear):
                                                      'year': np.mean,
                                                      'avetemp': np.mean })
     # save out the file for later combining with yield data
-    print 'Saving processed weather file to..:', PROC_WEATHER_FILE
+    print('Saving processed weather file to..:', PROC_WEATHER_FILE)
     df_years['precipAccumulation'].fillna(0,inplace=True)
     df_years.to_csv(PROC_WEATHER_FILE)
     df = pd.read_csv(PROC_WEATHER_FILE)
@@ -127,5 +127,5 @@ if __name__ == '__main__':
     df = weather_clean(df,MIN_YEAR,MAX_YEAR)
 
     # # save out the file for later combining with yield data
-    print 'Saving cleaned weather file to..:', PROC_WEATHER_FILE
+    print('Saving cleaned weather file to..:', PROC_WEATHER_FILE)
     df.to_csv(PROC_WEATHER_FILE)
